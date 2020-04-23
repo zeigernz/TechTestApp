@@ -26,7 +26,7 @@ module "fargate" {
       logs_retention_days      = 14 # Optional. 30 by default
 
       health_check_interval = 100             # Optional. In seconds. 30 by default
-      health_check_path     = "/healthcheck/" # Optional. "/" by default
+      health_check_path     = "/" # Optional. "/" by default
     }
   }
 
