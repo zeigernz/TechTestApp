@@ -40,6 +40,10 @@
       {
         "name": "VTT_DBPASSWORD",
         "value" : "postgres"
+      },
+      {
+        "name": "VTT_DBNAME",
+        "value" : "postgres"
       }
     ]
   }
