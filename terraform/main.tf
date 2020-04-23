@@ -26,7 +26,7 @@ module "fargate" {
       logs_retention_days      = 14 # Optional. 30 by default
 
       health_check_interval = 100             # Optional. In seconds. 30 by default
-      health_check_path     = "/" # Optional. "/" by default
+      health_check_path     = "/healthcheck/" # Optional. "/" by default
     }
   }
 
@@ -50,6 +50,16 @@ data "aws_security_group" "default" {
     name = "group-name"
     values = ["servian-techtest-api-default-services-sg"]
   }
+}
+
+# To ensure services can talk to postgres
+resource "aws_security_group_rule" "db_access" {
+  type              = "ingress"
+  from_port         = 5432
+  to_port           = 5432
+  protocol          = "tcp"
+  security_group_id = data.aws_security_group.default.id
+  source_security_group_id = data.aws_security_group.default.id
 }
 
 module "db" {
