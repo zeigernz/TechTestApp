@@ -37,7 +37,7 @@ module "fargate" {
 }
 
 data "aws_vpc" "default" {
-  default = true
+  id = "${module.fargate.vpc_id}"
 }
 
 data "aws_subnet_ids" "all" {
@@ -46,7 +46,10 @@ data "aws_subnet_ids" "all" {
 
 data "aws_security_group" "default" {
   vpc_id = data.aws_vpc.default.id
-  name   = "default"
+  filter {
+    name = "group-name"
+    values = ["servian-techtest-api-default-services-sg"]
+  }
 }
 
 module "db" {
@@ -81,7 +84,7 @@ module "db" {
   backup_retention_period = 0
 
   tags = {
-    Owner       = "zeigernz"
+    Owner       = "servian"
     Environment = "servian-techtestapp"
   }
 
