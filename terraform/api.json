@@ -28,6 +28,10 @@
       {
         "name": "VTT_LISTENPORT",
         "value": "80"
+      },
+      {
+        "name": "VTT_DBHOST",
+        "value": "servian-techtest-postgres.colgysvzzzzw.ap-southeast-2.rds.amazonaws.com"
       }
     ]
   }

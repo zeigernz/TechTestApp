@@ -37,5 +37,6 @@ TODO
 ## TODO
 1. Get rid of dependency on AWS CodeBuild, use CircleCI to push directly to ECS and do a smoke test after that push
 1. Separate IAM credentials for CircleCI user
-1. Remore backend for terraform state
+1. Internal DNS entry for postgres, so services can automatically know which database to use
+1. Remove backend for terraform state
 1. HTTPS when we own a domain

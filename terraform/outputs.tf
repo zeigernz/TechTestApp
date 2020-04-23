@@ -22,3 +22,7 @@ output "application_load_balancers" {
 output "cloudwatch_log_groups" {
   value = "${module.fargate.cloudwatch_log_group_names}"
 }
+
+output "postgres_endpoint" {
+  value = "${module.db.this_db_instance_endpoint}"
+}
