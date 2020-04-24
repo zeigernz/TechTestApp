@@ -1,0 +1,38 @@
+version: '3'
+services:
+  postgres:
+    image: "postgres:9.6"
+    ports:
+      - "5432:5432"
+    volumes:
+      - "/tmp/servian/docker-data/postgres:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_USER=techtestapp
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=app
+  techtetapp-updatedb:
+    image: "techtestapp:latest"
+    environment:
+      - VTT_DBUSER=techtestapp
+      - VTT_DBPASSWORD=12345
+      - VTT_DBNAME=app
+      - VTT_DBPORT=5432
+      - VTT_DBHOST=postgres
+    command: updatedb
+    depends_on:
+      - postgres
+  techtetapp-api:
+    image: "techtestapp:latest"
+    ports:
+      - "3000:3000"
+    environment:
+      - VTT_DBUSER=techtestapp
+      - VTT_DBPASSWORD=12345
+      - VTT_DBNAME=app
+      - VTT_DBPORT=5432
+      - VTT_DBHOST=postgres
+      - VTT_LISTENHOST=techtetapp-api
+      - VTT_LISTENPORT=3000
+    command: serve
+    depends_on:
+      - postgres

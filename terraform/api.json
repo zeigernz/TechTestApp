@@ -1,0 +1,50 @@
+[
+  {
+    "portMappings": [
+      {
+        "hostPort": ${container_port},
+        "protocol": "tcp",
+        "containerPort": ${container_port}
+      }
+    ],
+    "image": "${repository_url}:latest",
+    "name": "${container_name}",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "command": [
+      "serve"
+    ],
+    "environment": [
+      {
+        "name": "VTT_LISTENHOST",
+        "value": "0.0.0.0"
+      },
+      {
+        "name": "VTT_LISTENPORT",
+        "value": "80"
+      },
+      {
+        "name": "VTT_DBHOST",
+        "value": "servian-techtest-postgres.colgysvzzzzw.ap-southeast-2.rds.amazonaws.com"
+      },
+      {
+        "name": "VTT_DBUSER",
+        "value" : "postgres"
+      },
+      {
+        "name": "VTT_DBPASSWORD",
+        "value" : "postgres"
+      },
+      {
+        "name": "VTT_DBNAME",
+        "value" : "postgres"
+      }
+    ]
+  }
+]

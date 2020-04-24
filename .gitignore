@@ -22,3 +22,11 @@ dist/
 
 # Output Binary
 TechTestApp
+
+# IntelliJ Idea IDE
+.idea
+
+# Terraform download and state files
+terraform/.terraform
+/terraform/*.tfstate
+/terraform/*.tfstate.backup
