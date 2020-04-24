@@ -16,7 +16,7 @@ module "fargate" {
 
   services = {
     api = {
-      task_definition = "api.json"
+      task_definition = var.api_config_file_name
       container_port  = 80
       cpu             = "256"
       memory          = "512"
