@@ -1,9 +1,24 @@
 # Infrastructure deployments with Terraform
 This service can be run on [AWS](https://aws.amazon.com/), by spinning up the required infrastructure using [Terraform](https://www.terraform.io/).
 
-Please install/configure the pre-requisites below and then follow the steps as described. 
+# High level overview
+![Infrastructure diagram](/terraform/infrastructure.png)
 
-## Prerequisites
+> **NOTE**
+> In order to keep the diagram sufficiently high level, some details like security groups, the code deploy pipeline (that automatically updates ECS task definitions from ECR) have been ommitted.
+
+## High level developer workflow
+1. The whole stack can be run locally using
+    1. `docker build . -t techtestapp:latest`
+    1. `docker-compose up`
+1. Run terraform commands (as explained below) to create/update infrastructure on AWS. This step is needed only if there are infrastructure changes (under the `terraform` folder)
+1. Push code changes to github to automatically deploy the code changes to AWS
+
+
+## Deploy to AWS
+Please install/configure the pre-requisites below and then follow the steps as described to deploy this service to AWS.
+
+### Prerequisites
 1. Terraform executable v0.12.24 (already included in this repo: `terraform/terraform`)
 1. A working AWS profile configured on the machine from which `terraform` commands will be run. Read [this](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) for setup instructions
 1. Make sure that the `aws` provider `region` and `profile` values under `terraform/main.tf` are valid and what you intend to use, as per the AWS profile configuration
@@ -13,19 +28,20 @@ Please install/configure the pre-requisites below and then follow the steps as d
     1. `AWS_ACCOUNT_ID`
     1. `AWS_DEFAULT_REGION`    
 
-## Steps
+### Steps
 1. cd `terraform/terraform`
 1. `./terraform init`
 1. `./terraform plan -var="api_config_file_name=api.json"`
-1. If the plan looks good, `./terraform apply -var="api_config_file_name=api.json" -auto-approve`
+1. If the plan looks good, `./terraform apply -var="api_config_file_name=api.json" -auto-approve` 
 1. Trigger a CircleCI build (configured under `.circleci/config.yml`) for the branch you want to deploy. One easy way to do this is by committing and pushing changes for that branch to the github remote repo.
 1. Once the build is successful, your services should be accessible
 
-**NOTE**
-When running this deployment for the first time, create the database schema and seed it with some data by performing the above steps and replacing `-var="api_config_file_name=api.json"` with `-var="api_config_file_name=seed-api.json"`.
-This step will be automated in the future.
+> **NOTE**
+> When running this deployment for the first time, create the database schema and seed it with some data by performing the above steps and replacing `-var="api_config_file_name=api.json"` with `-var="api_config_file_name=seed-api.json"`.
+> Ensure that you update the postgres hostname associated with the key `VTT_DBHOST` in `api.json` and `seed-api.json` with the RDS host name that is output by terraform in step 4. Commit the change before running the deployment again as per the steps mentioned above. 
+> This step will be automated in the future.
 
-## Outputs
+### Outputs
 One of the outputs produced by the `terraform apply` command contains HTTP load balancer URLs to access the HTTP based services deployed by this terraform configuration, once the build for this change passes in CircleCI. 
 
 A typical output looks like:
@@ -47,6 +63,12 @@ This implies that the service `default-api` is available at the URL: `servian-te
 
 ## Build configuration
 Refer to CircleCI configuration under: `.circleci/config.yml`
+
+## Delete all the infrastructure from AWS
+If you are really sure about doing this, perform the following steps:
+1. cd `terraform/terraform`
+1. `./terraform destroy`
+1. Approve the deletion as prompted
 
 ## TODO
 1. The `updatedb` command currently needs to be run first to seed the database with a schema and some data. We can simplify deployment by simply doing what `updatedb` does, when we start the service using `serve`. 
